@@ -1,0 +1,72 @@
+<html>
+
+<head>
+    <style>
+        @media (min-width: 1100px) {
+            .center {
+                max-width: 60%;
+            }
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
+    <script>
+        var img
+        function previewFile() {
+            const preview = document.querySelector('img');
+            const file = document.querySelector('input[type=file]').files[0];
+            const reader = new FileReader();
+
+            reader.addEventListener("load", function () {
+                // get base64 image 
+                preview.src = reader.result;
+                img = reader.result
+            }, false);
+
+            if (file) {
+                reader.readAsDataURL(file);
+
+            }
+        }
+
+        function onClick() {
+            $.post('/upload', { "base64": img }, function (result) {
+                console.log(result)
+                b64 = result.base64
+                document.getElementById('id_result').src = 'data:image/jpeg;base64,' + b64.replace(/#/g, '/')
+            }, "json");
+        }
+    </script>
+
+    <style>
+        .model {
+            width: 60%;
+            margin: 0 auto 15% auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class='model'>
+        <div>
+            <h1>Flask图片上传和访问示例</h1>
+            <p>步骤：1.选择图片，2.点击上传即可。</p>
+        </div>
+
+        <div>
+            <input type="file" onchange="previewFile()" style="padding-bottom: 20px;padding: 20px 20px 20px 0px;">
+            <button onclick="onClick()" style="width:100px;">上传</button>
+        </div>
+        <div style="display: flex;">
+            <img src="" height="200px" alt="Image preview...">
+            <p style="margin-top: 150px;font-size: 50px;"><b>>>></b></p>
+            <img id='id_result' height="200px" alt="Image result...">
+        </div>
+
+    </div>
+
+</body>
+
+</html>
